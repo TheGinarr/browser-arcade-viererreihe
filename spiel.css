@@ -1,0 +1,287 @@
+/* spiel.css · Viererreihe – Holz-Standrahmen mit blauem Gitter (bleibt hell + dunkel gleich) */
+.vr-modi,
+.vr-stufen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 0.6rem 0;
+}
+.vr-modi .knopf[aria-pressed="true"],
+.vr-stufen .knopf[aria-pressed="true"] {
+  outline: 2px solid var(--ak);
+  outline-offset: 2px;
+}
+.vr-modi.gesperrt .knopf:not([aria-pressed="true"]) {
+  opacity: 0.45;
+  pointer-events: none;
+}
+.vr-online {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+  max-width: 26rem;
+  margin: 0 auto 0.8rem;
+  text-align: center;
+}
+.vr-online[hidden],
+.vr-stufen[hidden] {
+  display: none;
+}
+.vr-online form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: end;
+}
+.vr-online label {
+  display: grid;
+  gap: 0.3rem;
+  font-weight: 600;
+}
+.vr-online input {
+  font:
+    700 1.5rem/1.2 ui-monospace,
+    monospace;
+  letter-spacing: 0.35em;
+  text-align: center;
+  text-transform: uppercase;
+  width: 8ch;
+  padding: 0.35rem 0.3rem 0.35rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 2px solid currentColor;
+  background: transparent;
+  color: inherit;
+}
+.vr-klein {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  margin: 0;
+}
+.vr-kopf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 0.5rem;
+}
+.vr-kopf[hidden] {
+  display: none;
+}
+.vr-code {
+  font:
+    700 1.3rem ui-monospace,
+    monospace;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+}
+
+/* Statuszeile über dem Brett */
+.vr-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 2.2rem;
+  margin: 0 0 0.6rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-align: center;
+}
+.vr-status[data-art="fehler"] {
+  color: var(--pink);
+}
+.vr-status .mini {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  flex: none;
+}
+
+/* Steine (Farben fest) */
+.p1 {
+  --st: #e2403b;
+  --st2: #9e1c1a;
+}
+.p2 {
+  --st: #f6c623;
+  --st2: #b8860b;
+}
+.mini,
+.stein {
+  background: radial-gradient(
+    circle at 35% 30%,
+    color-mix(in srgb, var(--st) 55%, #fff) 0 12%,
+    var(--st) 40%,
+    var(--st2) 100%
+  );
+  box-shadow:
+    inset 0 -3px 5px rgb(0 0 0 / 0.35),
+    inset 0 0 0 3px color-mix(in srgb, var(--st2) 70%, transparent);
+}
+
+/* Gerät */
+.vr-geraet {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+  padding: 0 0 28px;
+}
+.vr-vorschau {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 0 16px 4px;
+}
+.vr-vorschau i {
+  justify-self: center;
+  width: 72%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.vr-vorschau i.an {
+  opacity: 0.9;
+}
+.vr-rahmen {
+  position: relative;
+  padding: 12px;
+  border-radius: 14px;
+  background:
+    repeating-linear-gradient(92deg, rgb(255 255 255 / 0.05) 0 2px, transparent 2px 9px),
+    repeating-linear-gradient(88deg, rgb(60 25 5 / 0.18) 0 1px, transparent 1px 13px),
+    linear-gradient(180deg, #b77a43, #8a5328 55%, #6d3f1d);
+  box-shadow:
+    inset 0 2px 0 rgb(255 230 190 / 0.45),
+    inset 0 -3px 0 rgb(0 0 0 / 0.35),
+    0 10px 24px rgb(0 0 0 / 0.45);
+}
+.vr-gitter {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+  border-radius: 10px;
+  padding: 4px;
+  background: linear-gradient(180deg, #2f6be0, #1d4fb8 60%, #173f94);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.35),
+    inset 0 -2px 0 rgb(0 0 0 / 0.3);
+  touch-action: manipulation;
+}
+.vr-gitter:focus-visible {
+  outline: 3px solid #ffd76a;
+  outline-offset: 4px;
+}
+.vr-spalte {
+  all: unset;
+  min-width: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  cursor: pointer;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+.vr-spalte.wahl,
+.vr-gitter:not(.warten) .vr-spalte:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+.vr-gitter.warten .vr-spalte {
+  cursor: default;
+}
+.vr-loch {
+  width: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.vr-loch::before {
+  content: "";
+  position: absolute;
+  inset: 10%;
+  border-radius: 50%;
+  background: #0c1b3f;
+  box-shadow:
+    inset 0 4px 6px rgb(0 0 0 / 0.65),
+    0 1px 0 rgb(255 255 255 / 0.25);
+}
+.vr-loch .stein {
+  position: relative;
+  width: 80%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+.stein.faellt {
+  animation: vr-fall calc(var(--fall, 1) * 55ms + 160ms) cubic-bezier(0.45, 0, 1, 1) both;
+}
+@keyframes vr-fall {
+  from {
+    transform: translateY(calc(var(--fall, 1) * -100% - 120%));
+  }
+  to {
+    transform: none;
+  }
+}
+.stein.sieg {
+  animation: vr-sieg 0.9s ease-in-out infinite alternate;
+}
+@keyframes vr-sieg {
+  to {
+    box-shadow:
+      inset 0 -3px 5px rgb(0 0 0 / 0.35),
+      0 0 0 4px #fff,
+      0 0 18px 6px #fff;
+  }
+}
+.vr-fuesse {
+  position: absolute;
+  inset: auto 0 0;
+  height: 30px;
+  pointer-events: none;
+}
+.vr-fuesse::before,
+.vr-fuesse::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 28%;
+  height: 30px;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(180deg, #6d3f1d, #4c2a12);
+  clip-path: polygon(30% 0, 70% 0, 100% 100%, 0 100%);
+  box-shadow: 0 6px 10px rgb(0 0 0 / 0.4);
+}
+.vr-fuesse::before {
+  left: -2%;
+}
+.vr-fuesse::after {
+  right: -2%;
+}
+.vr-ende {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 1rem 0 0;
+}
+.vr-ende[hidden] {
+  display: none;
+}
+.vr-punkte {
+  text-align: center;
+  margin: 0.4rem 0 0;
+  font-weight: 600;
+}
+@media (prefers-reduced-motion: reduce) {
+  .stein.faellt,
+  .stein.sieg {
+    animation: none;
+  }
+  .stein.sieg {
+    box-shadow: 0 0 0 4px #fff;
+  }
+}

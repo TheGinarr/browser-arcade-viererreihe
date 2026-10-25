@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#07070f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f2f3f9" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <script src="./assets/thema.js?v=20261024"></script>
+    <link rel="stylesheet" href="./assets/style.css?v=20261024w" />
+    <link rel="stylesheet" href="./spiel.css?v=20261024" />
+    <title>Viererreihe · Browser-Arcade</title>
+    <meta
+      name="description"
+      content="Vier Steine in eine Reihe – gegen den Computer, zu zweit am Gerät oder online mit Code."
+    />
+  </head>
+  <body style="--ak: var(--cyan)">
+    <div class="raster" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">Zum Inhalt springen</a>
+    <header class="kopf">
+      <nav class="container nav" aria-label="Hauptnavigation">
+        <a class="marke" href="./"><span class="logo">▶</span>GAMES</a>
+        <div class="nav-links">
+          <a href="./impressum.html">Impressum</a><a href="./datenschutz.html">Datenschutz</a>
+        </div>
+      </nav>
+    </header>
+    <main id="main" class="container">
+      <div class="spiel-kopf">
+        <div>
+          <h1>VIERERREIHE</h1>
+          <p class="unterzeile">
+            Wirf deine Steine ein – wer zuerst vier in einer Reihe hat, gewinnt.
+          </p>
+        </div>
+      </div>
+      <div class="vr-modi" id="modi" role="group" aria-label="Spielart">
+        <button type="button" class="knopf" data-modus="computer" aria-pressed="true">
+          Gegen Computer
+        </button>
+        <button type="button" class="knopf" data-modus="zweit" aria-pressed="false">
+          Zu zweit
+        </button>
+        <button type="button" class="knopf" data-modus="online" aria-pressed="false">Online</button>
+      </div>
+      <div class="vr-stufen" id="stufen" role="group" aria-label="Stärke des Computers">
+        <button type="button" class="knopf" data-stufe="leicht" aria-pressed="false">Leicht</button>
+        <button type="button" class="knopf" data-stufe="mittel" aria-pressed="true">Mittel</button>
+        <button type="button" class="knopf" data-stufe="schwer" aria-pressed="false">Schwer</button>
+      </div>
+      <div class="vr-online" id="online" hidden>
+        <button type="button" class="knopf primaer" id="eroeffnen">Spiel eröffnen</button>
+        <form id="beitritt" novalidate>
+          <label
+            >Code vom Gegenüber<input
+              id="code"
+              maxlength="4"
+              autocomplete="off"
+              autocapitalize="characters"
+              spellcheck="false"
+              placeholder="AB3D"
+          /></label>
+          <button type="submit" class="knopf">Beitreten</button>
+        </form>
+        <p class="vr-klein">
+          Online verbinden sich die Browser direkt. Dabei sieht dein Mitspieler technisch deine
+          IP-Adresse. Mehr in der
+          <a href="./datenschutz.html#mehrspieler">Datenschutzerklärung</a>.
+        </p>
+      </div>
+      <div class="vr-kopf" id="raumkopf" hidden>
+        <span>Code: <span class="vr-code" id="raumcode">····</span></span>
+        <button type="button" class="knopf" id="teilen">Code teilen</button>
+        <button type="button" class="knopf" id="aufstehen">Verlassen</button>
+      </div>
+      <div class="hud">
+        <div class="hud-feld">
+          <div class="label" id="hud-l1">Serie</div>
+          <div class="wert" id="hud-1">0</div>
+        </div>
+        <div class="hud-feld">
+          <div class="label" id="hud-l2">Beste Serie (Schwer)</div>
+          <div class="wert" id="hud-2">0</div>
+        </div>
+      </div>
+      <div class="buehne">
+        <p class="vr-status" id="status" role="status" aria-live="polite"></p>
+        <div class="vr-geraet">
+          <div class="vr-vorschau" id="vorschau" aria-hidden="true"></div>
+          <div class="vr-rahmen">
+            <div
+              class="vr-gitter"
+              id="gitter"
+              tabindex="0"
+              role="group"
+              aria-label="Spielbrett, 7 Spalten. Pfeiltasten wählen, Enter wirft ein."
+            ></div>
+          </div>
+          <div class="vr-fuesse" aria-hidden="true"></div>
+        </div>
+        <p class="vr-punkte" id="punkte"></p>
+        <div class="vr-ende" id="ende" hidden>
+          <button type="button" class="knopf primaer" id="nochmal">Nochmal</button>
+        </div>
+      </div>
+      <p class="steuerung">
+        Tippe auf eine Spalte, um einen Stein einzuwerfen. Tastatur: <kbd>←</kbd>
+        <kbd>→</kbd> wählen, <kbd>Enter</kbd> wirft ein.
+      </p>
+      <section style="max-width: 420px; margin-top: 36px">
+        <h2 style="font-family: var(--pixel); font-weight: 400; font-size: 0.85rem">
+          Topliste · Siege in Serie (Schwer)
+        </h2>
+        <div id="topliste"></div>
+        <button class="knopf" id="reset" style="margin-top: 10px">Spielstand zurücksetzen</button>
+      </section>
+      <section class="lernbox">
+        <details open>
+          <summary>Anleitung &amp; Regeln</summary>
+          <p>
+            <strong>Ziel:</strong> Bring vier eigene Steine in eine Reihe – waagerecht, senkrecht
+            oder schräg.
+          </p>
+          <ul>
+            <li>Ihr werft abwechselnd einen Stein in eine Spalte. Er fällt bis ganz nach unten.</li>
+            <li>Ist das Brett voll und keiner hat vier in einer Reihe, ist es unentschieden.</li>
+            <li>
+              <strong>Gegen Computer:</strong> drei Stärken. Auf „Schwer“ zählt deine Siegesserie
+              für die Topliste – eine Niederlage oder ein Unentschieden beendet sie.
+            </li>
+            <li><strong>Zu zweit:</strong> abwechselnd am selben Gerät.</li>
+            <li>
+              <strong>Online:</strong> Eröffne ein Spiel und schick den Code (oder den Link) an
+              jemanden. Nach jeder Partie wechselt, wer beginnt.
+            </li>
+            <li>
+              Tipp: Die mittlere Spalte ist die wertvollste – durch sie laufen die meisten Reihen.
+            </li>
+          </ul>
+        </details>
+      </section>
+      <section class="lernbox">
+        <details>
+          <summary>Wie funktioniert der Code?</summary>
+          <p>
+            <strong>Das Brett ist ein Feld aus 7 Spalten.</strong> Jede Spalte ist eine Liste mit 6
+            Plätzen, Platz 0 ist unten. Ein Stein landet einfach auf dem ersten freien Platz – so
+            ist die „Schwerkraft“ schon erledigt.
+          </p>
+          <p>
+            <strong>Sieg prüfen:</strong> Nach jedem Zug zählt das Spiel nur vom neuen Stein aus in
+            vier Richtungen (waagerecht, senkrecht, zwei Schrägen) gleiche Steine in beide
+            Richtungen. Sind es mindestens vier, ist das die Gewinnlinie.
+          </p>
+          <p>
+            <strong>Der Computer denkt voraus (Minimax mit Alpha-Beta).</strong> Er probiert seine
+            Züge, dann deine Antworten, dann seine … bis zu 8 Halbzüge tief. Die Stellung am Ende
+            bewertet er über alle 69 möglichen Viererfenster: drei eigene Steine mit einem freien
+            Platz sind viel wert, drei gegnerische sehr gefährlich. Alpha-Beta lässt Äste weg, die
+            ohnehin schlechter sind – und weil er die Mitte zuerst probiert, werden sehr viele Äste
+            früh abgeschnitten. Das Rechnen läuft in einem <code>Web Worker</code>, damit die Seite
+            dabei nicht ruckelt.
+          </p>
+          <p>
+            <strong>Online</strong> ist ein Browser der Gastgeber: Er prüft jeden Zug und schickt
+            den Stand an den Gast. Der Gast schickt nur die gewählte Spalte. So kann keiner
+            schummeln, indem er sich Steine dazuschreibt.
+          </p>
+        </details>
+      </section>
+    </main>
+    <footer class="fuss">
+      <div class="container fuss-in">
+        <span>Browser-Arcade · Open Source</span>
+        <nav aria-label="Rechtliches">
+          <a href="./impressum.html">Impressum</a><a href="./datenschutz.html">Datenschutz</a>
+        </nav>
+      </div>
+    </footer>
+    <script type="module" src="./game.js?v=20261024"></script>
+  </body>
+</html>
